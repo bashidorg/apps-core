@@ -2,4 +2,3 @@ node_modules/
 data/cachedAssets.*
 static/
 public/
-bashid-deploy.sh

@@ -1,6 +1,6 @@
 +++
-title = "Lorem Ipsum"
-date = 2018-06-12T06:48:34+07:00
+title = "Hello"
+date = 2018-06-12T20:22:28+07:00
 description = ""
 draft = false
 +++

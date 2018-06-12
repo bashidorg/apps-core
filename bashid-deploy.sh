@@ -1,5 +1,33 @@
 #!/bin/bash
+
+function echo_fail {
+  printf "${1} \e[31m✘"
+  printf "\033\e[0m\n"
+}
+
+function echo_pass {
+  printf "${1} \e[32m✔"
+  printf "\033\e[0m\n"
+}
+
 clear
+	# which hugo > /dev/null 2>&1
+	# if [[ "$?" -eq "0" ]]; then
+	# 	echo_pass "Hugo" echo ""
+	# else 
+	# 	echo $(echo_fail "-> Hugo")
+	# fi
+
+	# which gulp > /dev/null 2>&1
+	# if [[ "$?" -eq "0" ]]; then
+	# 	echo_pass "Gulp"
+	# else
+	# 	npm install
+	# fi
+
+	# sleep 0.5
+	# clear
+
 	source deploy_modules/configure-menu.sh
 	declare -a options=("Create post" "Deploy Sites");
 	generateDialog "options" "Choose an option" "${options[@]}"

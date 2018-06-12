@@ -19,4 +19,4 @@ gulp.task("watch", ["scss"], function () {
     gulp.watch("themes/osprey/static/styles/scss/*", ["scss"])
 })
 
-gulp.task("default", ["watch"])
+gulp.task("deploy", ["scss"])

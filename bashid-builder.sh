@@ -29,6 +29,17 @@ xSpin 'checking node_modules directory'
 	fi
 ySpin $?
 
+xSpin 'checking public directory'
+    sleep 1
+    [[ -z "$(ls -A public)" ]] >> /dev/null 2>&1
+
+    if [[ $? -eq 0 ]]; then
+        ySpin 1
+        xSpin 'get datas from submodule'
+        xterm -geometry 96x25+0+0 -title "Github submodule" -e git submodule update --init --recursive --remote
+    fi
+ySpin $?
+
 clear
 
 declare -a options=("Create post" "Deploy Sites");

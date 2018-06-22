@@ -4,79 +4,64 @@
 # init
 for file in bashid_modules/*; do
     . "bashid_modules/${file##*/}"
-done
+done 
 
 banner
-ec "*" "Checking Requirements..."
-xSpin 'checking hugo'
-	sleep 1
-	which hugo > /dev/null 2>&1
-ySpin $?
+while [ "$1" != "" ]; do
+    argv=`echo $1 | awk -F= '{print $1}'`
+    val=`echo $2 | sed 's/^[^=]*=//g'`
+    case $argv in
+        -h | --help)
+            echo "help me"
+            exit
+            ;;
+        --create)
+            check_pkg
+            hugo new "${val// /-}.md"
+            ;;
+        --deploy)
+            check_pkg
+            [[ ${val,,} == "staging" || ${val} == 0 ]] && {
+                deploy 0
+            };
 
-xSpin 'checking npm'
-	sleep 1
-	which npm > /dev/null 2>&1
-ySpin $?
+            [[ ${val,,} == "production" || ${val} == 1 ]] && {
+                deploy 1
+            };
+            ;;
+        *)
+            exit 1
+            ;;
+    esac
+    shift
+done
 
-xSpin 'checking node_modules directory'
-	sleep 1
-	[[ -d "node_modules" ]] > /dev/null 2>&1
-
-	if [[ ! $? -eq 0 ]]; then
-		ySpin 1
-		xSpin 'installing from package.json'
-		xterm -geometry 96x25+0+0 -title "Installing node modules" -e npm install
-	fi
-ySpin $?
-
-xSpin 'checking public directory'
-    sleep 1
-    [[ -z "$(ls -A public)" ]] >> /dev/null 2>&1
-
-    if [[ $? -eq 0 ]]; then
-        ySpin 1
-        xSpin 'get datas from submodule'
-        xterm -geometry 96x25+0+0 -title "Github submodule" -e git submodule update --init --recursive --remote
-    fi
-ySpin $?
-
-clear
-
-declare -a options=("Create post" "Deploy Sites");
-generateDialog "options" "Choose an option" "${options[@]}"
-read -p ">> " choice
-clear
-
-case $choice in
-    1 )
-        while [[ $title == '' ]]; do
-            read -p ">> title: " title
-        done
-        
-        hugo new "blog/${title}.md"
-    ;;
-    2 )
-        declare -a instructions=("Staging" "Production");
-        generateDialog "instructions" "Deploying mode" "${instructions[@]}"
-        read -p ">> " mode
-        
-        if [[ $mode == 1 ]]; then clear
-            gulp deploy
-            hugo server -w
-        fi
-        
-        if [[ $mode == 2 ]]; then clear
-            rm -r public/blog
+[[ $# -eq 0 ]] && { check_pkg
+    declare -a options=("Create post" "Deploy Sites");
+    generateDialog "options" "Choose an option" "${options[@]}"
+    read -p ">> " choice
+    clear
+    
+    case $choice in
+        1 )
+            while [[ $title == '' ]]; do
+                read -p ">> title: " title
+            done
             
-            gulp deploy
-            hugo --quiet
+            hugo new "blog/${title// /-}.md"
+        ;;
+        2 )
+            declare -a instructions=("Staging" "Production");
+            generateDialog "instructions" "Deploying mode" "${instructions[@]}"
+            read -p ">> " mode
             
-            cd public
-            # deploy github as production
-            git add .
-            git commit -m "[BASHID-BOT] Deploying sites | $(cat /proc/sys/kernel/random/uuid)"
-            git push origin master
-            cd ..
-        fi
-    ;;
-esac
+            [[ $mode == 1 ]] && {
+                deploy 0
+            };
+
+            [[ $mode == 2 ]] && {
+                deploy 1
+            };
+        ;;
+    esac
+};

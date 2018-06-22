@@ -49,12 +49,12 @@ function _spinner() {
     esac
 }
 
-function xSpin {
+function showSpin {
     _spinner "start" "${1}" & _sp_pid=$!
     disown
 }
 
-function ySpin {
+function hideSpin {
     _spinner "stop" $1 $_sp_pid
     unset _sp_pid
 }

@@ -17,7 +17,7 @@ while [ "$1" != "" ]; do
             ;;
         --create)
             check_pkg
-            hugo new "${val// /-}.md"
+            hugo new "blog/${val// /-}.md"
             ;;
         --deploy)
             check_pkg

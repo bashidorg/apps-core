@@ -17,7 +17,8 @@ while [ "$1" != "" ]; do
             ;;
         --create)
             check_pkg
-            hugo new "blog/${val// /-}.md"
+            hugo new "blog/${val// /-}.md" > /dev/null 2>&1 | vi "blog/${val// /-}.md"
+            vi "content/blog/${val// /-}.md"
             ;;
         --deploy)
             check_pkg
@@ -48,7 +49,8 @@ done
                 read -p ">> title: " title
             done
             
-            hugo new "blog/${title// /-}.md"
+            hugo new "blog/${title// /-}.md" > /dev/null 2>&1
+            vi "content/blog/${title// /-}.md"
         ;;
         2 )
             declare -a instructions=("Staging" "Production");

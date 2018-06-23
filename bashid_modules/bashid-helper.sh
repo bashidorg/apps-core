@@ -55,7 +55,7 @@ function deploy {
 
             if [[ $REPLY =~ ^[Yy]$ ]]
             then
-                git commit -m "[BASHID-BOT] Adding new content | $(cat /proc/sys/kernel/random/uuid)"
+                git commit -m "[BASHID-BUILDER] Adding new content | $(cat /proc/sys/kernel/random/uuid)"
                 git push origin bashid-content
             else
                 if [[ ! $REPLY =~ ^[Yy]$ ]]; then

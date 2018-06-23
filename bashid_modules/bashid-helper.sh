@@ -9,7 +9,7 @@ check_pkg () {
     sleep 1
     which hugo > /dev/null 2>&1
     hideSpin $?
-
+    
     showSpin 'checking npm'
     sleep 1
     which npm > /dev/null 2>&1
@@ -36,30 +36,37 @@ check_pkg () {
         xterm -geometry 96x25+0+0 -title "Github submodule" -e git submodule update --init --recursive --remote
     fi
     hideSpin $?
-
+    
     clear # clear console after checking all pkg
 }
 
 function deploy {
-	if [[ $1 == 0 ]]; then
-		gulp deploy
+    if [[ $1 == 0 ]]; then
+        gulp deploy
         # xdg-open "http://localhost:1313" && hugo server -w // crash at google-chrome
         hugo server -w
-    else 
-    	if [[ $1 == 1 ]]; then
-    		rm -r public/blog
-    
-            gulp deploy
-            hugo --quiet
-            
-            cd public
-            # deploy github as production
+    else
+        if [[ $1 == 1 ]]; then
             git add .
-            git commit -m "[BASHID-BOT] Deploying sites | $(cat /proc/sys/kernel/random/uuid)"
-            git push origin master
-            cd ..
-	    fi
-	fi
+            git status
+            
+            read -p "Are you sure? " -n 1 -r
+            echo
+
+            if [[ $REPLY =~ ^[Yy]$ ]]
+            then
+                git commit -m "[BASHID-BOT] Adding new content | $(cat /proc/sys/kernel/random/uuid)"
+                git push origin bashid-content
+            else
+                if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+                    git status | grep 'new file:' | cut -f2 -d: | sed 's/^ *//' | while read -r files; do
+                        git rm --cached $files > /dev/null 2>&1
+                    done
+                    echo -e "[!] Canceled..."
+                fi
+            fi
+        fi
+    fi
 }
 
 function ec {

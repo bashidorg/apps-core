@@ -15,28 +15,6 @@ check_pkg () {
     which npm > /dev/null 2>&1
     hideSpin $?
     
-    showSpin 'checking node_modules directory'
-    sleep 1
-    [[ -d "node_modules" ]] > /dev/null 2>&1
-    
-    if [[ ! $? -eq 0 ]]; then
-        hideSpin 1
-        showSpin 'installing from package.json'
-        xterm -geometry 96x25+0+0 -title "Installing node modules" -e npm install
-    fi
-    hideSpin $?
-    
-    showSpin 'checking public directory'
-    sleep 1
-    [[ -z "$(ls -A public)" ]] >> /dev/null 2>&1
-    
-    if [[ $? -eq 0 ]]; then
-        hideSpin 1
-        showSpin 'get datas from submodule'
-        xterm -geometry 96x25+0+0 -title "Github submodule" -e git submodule update --init --recursive --remote
-    fi
-    hideSpin $?
-    
     clear # clear console after checking all pkg
 }
 
